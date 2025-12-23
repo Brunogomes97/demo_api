@@ -12,6 +12,9 @@ using project.API.Infrastructure.Security;
 using project.API.Infrastructure.Middlewares;
 using project.API.Infrastructure.Extensions;
 using project.API.Infrastructure.Swagger;
+using project.API.Applications.Products.Interfaces;
+using project.API.Applications.Products.Services;
+using project.API.Applications.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,6 +32,8 @@ builder.Services.AddControllers();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ProductService>();
 builder.Services.AddFluentValidationAutoValidation();
 builder.Services.AddValidatorsFromAssemblyContaining<CreateUserDtoValidator>();
 builder.Services.AddEndpointsApiExplorer();
