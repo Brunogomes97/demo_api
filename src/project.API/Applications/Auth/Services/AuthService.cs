@@ -38,7 +38,6 @@ public class AuthService : IAuthService
     public async Task<AuthResponseDto> SignInAsync(SignInDto dto)
     {
         var user = await _users.GetByEmailAsync(dto.Email);
-        Console.WriteLine($"User encontrado: {user?.Id} | {user?.Email}");
 
         if (user == null ||
             !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))

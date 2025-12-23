@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using project.API.Applications.User.DTOs;
 using project.API.Applications.User.Interfaces;
 using project.API.Domain.Entities;
-
+using Microsoft.AspNetCore.Authorization;
 namespace project.API.User.Controllers;
 
 [ApiController]
@@ -17,6 +17,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateUserDto dto)
     {
         var user = await _service.CreateAsync(dto);
@@ -29,6 +30,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize]
     public async Task<ActionResult<UserResponseDto>> GetById(Guid id)
     {
         var user = await _service.GetByIdAsync(id);
@@ -36,6 +38,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("by-email/{email}")]
+    [Authorize]
     public async Task<ActionResult<UserResponseDto>> GetByEmail(string email)
     {
         var user = await _service.GetByEmailAsync(email);
@@ -43,6 +46,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id:guid}")]
+    [Authorize]
     public async Task<ActionResult<UserResponseDto>> Update(
         Guid id,
         [FromBody] UpdateUserDto dto)
@@ -63,6 +67,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _service.DeleteAsync(id);
