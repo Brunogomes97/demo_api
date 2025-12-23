@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using project.API.Applications.Interfaces;
+using project.API.Applications.User.Interfaces;
 using project.API.Domain.Entities;
 using project.API.Infrastructure.Data;
 
@@ -13,26 +13,26 @@ public class UserRepository : IUserRepository
     {
         _db = db;
     }
-    public async Task AddAsync(User user)
-    {
+    public async Task AddAsync(UserEntity user)
+    {   
         _db.Users.Add(user);
         await _db.SaveChangesAsync();
     }
-    public Task<User?> GetByIdAsync(Guid id)
+    public Task<UserEntity?> GetByIdAsync(Guid id)
         => _db.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-    public Task<User?> GetByEmailAsync(string email)
+    public Task<UserEntity?> GetByEmailAsync(string email)
         => _db.Users.FirstOrDefaultAsync(u => u.Email == email);
 
-    public Task<User?> GetByUsernameAsync(string username)
+    public Task<UserEntity?> GetByUsernameAsync(string username)
         => _db.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(UserEntity user)
     {
         _db.Users.Update(user);
         await _db.SaveChangesAsync();
     }
-    public async Task DeleteAsync(User user)
+    public async Task DeleteAsync(UserEntity user)
 {
     _db.Users.Remove(user);
     await _db.SaveChangesAsync();

@@ -1,8 +1,8 @@
-using project.API.Applications.DTOs;
-using project.API.Applications.Interfaces;
+using project.API.Applications.User.DTOs;
+using project.API.Applications.User.Interfaces;
 using project.API.Domain.Entities;
 
-namespace project.API.Applications.Services;
+namespace project.API.Applications.User.Services;
 
 public class UserService : IUserService
 {
@@ -13,31 +13,31 @@ public class UserService : IUserService
         _repository = repository;
     }
 
-    public async Task<User> CreateAsync(CreateUserDto dto)
+    public async Task<UserEntity> CreateAsync(CreateUserDto dto)
     {
         if (await _repository.EmailExistsAsync(dto.Email))
             throw new InvalidOperationException("Email already registered");
 
-        var user = new User
+        var user = new UserEntity
         {
             Username = dto.Username,
             Email = dto.Email,
-            PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password)
+            Password = BCrypt.Net.BCrypt.HashPassword(dto.Password)
         };
 
         await _repository.AddAsync(user);
         return user;
     }
 
-    public async Task<User> GetByIdAsync(Guid id)
+    public async Task<UserEntity> GetByIdAsync(Guid id)
         => await _repository.GetByIdAsync(id)
            ?? throw new KeyNotFoundException("User not found");
 
-    public async Task<User> GetByEmailAsync(string email)
+    public async Task<UserEntity> GetByEmailAsync(string email)
         => await _repository.GetByEmailAsync(email)
            ?? throw new KeyNotFoundException("User not found");
 
-    public async Task<User> UpdateAsync(Guid id, UpdateUserDto dto)
+    public async Task<UserEntity> UpdateAsync(Guid id, UpdateUserDto dto)
     {
         var user = await _repository.GetByIdAsync(id)
             ?? throw new KeyNotFoundException("User not found");
@@ -51,7 +51,7 @@ public class UserService : IUserService
 
         if (!string.IsNullOrWhiteSpace(dto.Password))
         {
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            user.Password = BCrypt.Net.BCrypt.HashPassword(dto.Password);
         }
 
         await _repository.UpdateAsync(user);

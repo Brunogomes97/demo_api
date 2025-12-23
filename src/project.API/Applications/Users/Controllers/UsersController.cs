@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using project.API.Applications.DTOs;
-using project.API.Applications.Services;
+using project.API.Applications.User.DTOs;
+using project.API.Applications.User.Interfaces;
 using project.API.Domain.Entities;
 
-namespace project.API.Controllers;
+namespace project.API.User.Controllers;
 
 [ApiController]
 [Route("api/users")]
@@ -51,7 +51,7 @@ public class UsersController : ControllerBase
         return Ok(MapToResponse(user));
     }
 
-    private static UserResponseDto MapToResponse(User user)
+    private static UserResponseDto MapToResponse(UserEntity user)
     {
         return new UserResponseDto
         {

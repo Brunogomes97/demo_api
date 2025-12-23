@@ -1,4 +1,4 @@
-namespace project.API.Applications.DTOs;
+namespace project.API.Applications.User.DTOs;
 
 public class UpdateUserDto
 {
