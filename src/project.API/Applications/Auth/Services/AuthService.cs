@@ -3,6 +3,7 @@ using project.API.Applications.User.DTOs;
 using project.API.Applications.Auth.Interfaces;
 using project.API.Applications.User.Interfaces;
 using project.API.Domain.Entities;
+using project.API.Domain.Exceptions;
 
 namespace project.API.Applications.Auth.Services;
 
@@ -42,7 +43,7 @@ public class AuthService : IAuthService
         if (user == null ||
             !BCrypt.Net.BCrypt.Verify(dto.Password, user.Password))
         {
-            throw new UnauthorizedAccessException("Invalid credentials");
+            throw new UnauthorizedException("Invalid credentials");
         }
 
         var token = _tokenService.Generate(user);

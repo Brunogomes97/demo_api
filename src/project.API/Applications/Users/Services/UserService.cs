@@ -1,6 +1,7 @@
 using project.API.Applications.User.DTOs;
 using project.API.Applications.User.Interfaces;
 using project.API.Domain.Entities;
+using project.API.Domain.Exceptions;
 
 namespace project.API.Applications.User.Services;
 
@@ -16,7 +17,7 @@ public class UserService : IUserService
     public async Task<UserEntity> CreateAsync(CreateUserDto dto)
     {
         if (await _repository.EmailExistsAsync(dto.Email))
-            throw new InvalidOperationException("Email already registered");
+            throw new ConflictException("Email already registered");
 
         var user = new UserEntity
         {
@@ -31,20 +32,20 @@ public class UserService : IUserService
 
     public async Task<UserEntity> GetByIdAsync(Guid id)
         => await _repository.GetByIdAsync(id)
-           ?? throw new KeyNotFoundException("User not found");
+           ?? throw new NotFoundException("User not found");
 
     public async Task<UserEntity> GetByEmailAsync(string email)
         => await _repository.GetByEmailAsync(email)
-           ?? throw new KeyNotFoundException("User not found");
+           ?? throw new NotFoundException("User not found");
 
     public async Task<UserEntity> UpdateAsync(Guid id, UpdateUserDto dto)
     {
         var user = await _repository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException("User not found");
+            ?? throw new NotFoundException("User not found");
 
         if (user.Email != dto.Email &&
             await _repository.EmailExistsAsync(dto.Email))
-            throw new InvalidOperationException("Email already registered");
+            throw new ConflictException("Email already registered");
 
         user.Username = dto.Username;
         user.Email = dto.Email;
@@ -60,7 +61,7 @@ public class UserService : IUserService
     public async Task DeleteAsync(Guid id)
     {
         var user = await _repository.GetByIdAsync(id)
-            ?? throw new KeyNotFoundException("User not found");
+            ?? throw new NotFoundException("User not found");
 
         await _repository.DeleteAsync(user);
     }

@@ -9,6 +9,7 @@ using project.API.Applications.Auth.Interfaces;
 using project.API.Applications.Auth.Services;
 using project.API.Infrastructure.Repositories;
 using project.API.Infrastructure.Security;
+using project.API.Infrastructure.Middlewares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,7 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
