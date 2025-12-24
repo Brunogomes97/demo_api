@@ -6,7 +6,9 @@ namespace project.API.Applications.Products.Interfaces
     {
         Task<ProductResponseDto> CreateAsync(Guid userId, CreateProductDto dto);
         Task<IEnumerable<ProductResponseDto>> GetByUserAsync(Guid userId);
-        Task<ProductResponseDto> UpdateAsync(Guid userId, Guid productId, CreateProductDto dto);
+        Task<ProductResponseDto> UpdateAsync(Guid userId, Guid productId, UpdateProductDto dto);
         Task DeleteAsync(Guid userId, Guid productId);
+        Task<int> CountByUserAsync(Guid userId);
+        Task<PaginatedProductsDto> GetByUserPagedAsync(Guid userId, ProductPaginationQueryDto query);
     }
 }

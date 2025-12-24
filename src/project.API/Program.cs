@@ -15,6 +15,7 @@ using project.API.Infrastructure.Swagger;
 using project.API.Applications.Products.Interfaces;
 using project.API.Applications.Products.Services;
 using project.API.Applications.Repositories;
+using System.IdentityModel.Tokens.Jwt;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,6 +41,10 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddJwtAuthentication(builder.Configuration);
 builder.Services.AddSwaggerWithJwt();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
+JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
+
 
 var app = builder.Build();
 

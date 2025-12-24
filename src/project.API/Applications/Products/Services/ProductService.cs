@@ -18,6 +18,7 @@ namespace project.API.Applications.Products.Services
                 Name = dto.Name,
                 Price = dto.Price,
                 Category = dto.Category,
+                Description = dto.Description,
                 UserId = userId
             };
 
@@ -48,17 +49,15 @@ namespace project.API.Applications.Products.Services
             });
         }
 
-        public async Task<ProductResponseDto> UpdateAsync(Guid userId, Guid productId, CreateProductDto dto)
+        public async Task<ProductResponseDto> UpdateAsync(Guid userId, Guid productId, UpdateProductDto dto)
         {
             var product = await _repo.GetByIdAsync(productId)
                 ?? throw new NotFoundException("Product not found");
 
             if (product.UserId != userId)
-                throw new UnauthorizedException("Cannot edit another user's product");
+                throw new UnauthorizedException("Cannot edit this product");
 
-            product.Name = dto.Name;
-            product.Price = dto.Price;
-            product.Category = dto.Category;
+            product.Apply(dto);
 
             var updated = await _repo.UpdateAsync(product);
 
@@ -69,6 +68,7 @@ namespace project.API.Applications.Products.Services
                 Price = updated.Price,
                 Category = updated.Category,
                 UserId = updated.UserId,
+                Description = updated.Description,
                 CreatedAt = updated.CreatedAt
             };
         }
@@ -79,9 +79,42 @@ namespace project.API.Applications.Products.Services
                 ?? throw new NotFoundException("Product not found");
 
             if (product.UserId != userId)
-                throw new UnauthorizedException("Cannot delete another user's product");
+                throw new UnauthorizedException("Cannot delete this product");
 
             await _repo.DeleteAsync(product);
+        }
+
+        public async Task<int> CountByUserAsync(Guid userId)
+        {
+            return await _repo.CountByUserAsync(userId);
+        }
+
+        public async Task<PaginatedProductsDto> GetByUserPagedAsync(Guid userId, ProductPaginationQueryDto query)
+        {
+            if (query.Offset < 0 || query.Limit <= 0)
+                throw new InvalidPaginationException("Invalid pagination parameters");
+        
+            var (items, total) = await _repo.GetPagedByUserAsync(
+                userId,
+                query.Offset,
+                query.Limit,
+                query.Category,
+                query.Name);
+
+           return new PaginatedProductsDto
+            {
+                Total = total,
+                Items = items.Select(p => new ProductResponseDto
+                {
+                    Id = p.Id,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Category = p.Category,
+                    UserId = p.UserId,
+                    Description = p.Description,
+                    CreatedAt = p.CreatedAt
+                }).ToList()
+            };
         }
     }
 }

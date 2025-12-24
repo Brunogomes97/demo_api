@@ -1,8 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using project.API.Applications.Auth.Interfaces;
 using project.API.Applications.Products.DTOs;
 using project.API.Applications.Products.Services;
-using System.Security.Claims;
 
 namespace project.API.Controllers
 {
@@ -12,16 +12,14 @@ namespace project.API.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly ProductService _service;
+        private readonly ICurrentUserService _currentUser;
 
-        public ProductsController(ProductService service) => _service = service;
-
-        private Guid GetUserId() =>
-            Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
+        public ProductsController(ProductService service, ICurrentUserService currentUser) => (_service, _currentUser) = (service, currentUser);
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateProductDto dto)
         {
-            var userId = GetUserId();
+            var userId = _currentUser.UserId;
             var product = await _service.CreateAsync(userId, dto);
             return CreatedAtAction(nameof(Create), new { id = product.Id }, product);
         }
@@ -29,15 +27,27 @@ namespace project.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetByUser()
         {
-            var userId = GetUserId();
+            var userId = _currentUser.UserId;
             var products = await _service.GetByUserAsync(userId);
             return Ok(products);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, [FromBody] CreateProductDto dto)
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPaged(
+        [FromQuery] ProductPaginationQueryDto query)
         {
-            var userId = GetUserId();
+            var userId = _currentUser.UserId;
+            var result = await _service.GetByUserPagedAsync(
+                userId,
+                query
+            );
+            return Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateProductDto dto)
+        {
+            var userId = _currentUser.UserId;
             var product = await _service.UpdateAsync(userId, id, dto);
             return Ok(product);
         }
@@ -45,7 +55,7 @@ namespace project.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var userId = GetUserId();
+            var userId = _currentUser.UserId;
             await _service.DeleteAsync(userId, id);
             return NoContent();
         }
