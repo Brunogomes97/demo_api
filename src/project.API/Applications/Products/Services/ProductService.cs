@@ -31,6 +31,7 @@ namespace project.API.Applications.Products.Services
                 Price = created.Price,
                 Category = created.Category,
                 UserId = created.UserId,
+                Description = created.Description,
                 CreatedAt = created.CreatedAt
             };
         }
