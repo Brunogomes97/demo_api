@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using project.API.Applications.Auth.DTOs;
 using project.API.Applications.Auth.Interfaces;
@@ -9,10 +10,12 @@ namespace project.API.Auth.Controllers;
 public class AuthController : ControllerBase
 {
     private readonly IAuthService _auth;
+    private readonly ICurrentUserService _currentUser;
 
-    public AuthController(IAuthService auth)
+    public AuthController(IAuthService auth, ICurrentUserService currentUser)
     {
         _auth = auth;
+        _currentUser = currentUser;
     }
 
     [HttpPost("signup")]
@@ -27,6 +30,14 @@ public class AuthController : ControllerBase
     {
         var result = await _auth.SignInAsync(dto);
 
+        return Ok(result);
+    }
+
+    [Authorize]
+    [HttpGet("session")]
+    public async Task<ActionResult<SessionResponseDto>> GetSession()
+    {
+        var result = await _currentUser.GetSession();
         return Ok(result);
     }
 }

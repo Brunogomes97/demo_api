@@ -1,5 +1,7 @@
 using System.IdentityModel.Tokens.Jwt;
+using project.API.Applications.Auth.DTOs;
 using project.API.Applications.Auth.Interfaces;
+using project.API.Applications.User.DTOs;
 
 
 namespace project.API.Applications.Auth.Services;
@@ -23,4 +25,19 @@ public class CurrentUserService : ICurrentUserService
 
     public string? Username =>
         _http.HttpContext!.User.FindFirst(JwtRegisteredClaimNames.UniqueName)?.Value;
+
+    public Task<SessionResponseDto> GetSession()
+    {
+        var user = new UserResponseDto
+        {
+            Id = UserId,
+            Email = Email!,
+            Username = Username!
+        };
+
+        var session = new SessionResponseDto(user);
+
+        return Task.FromResult(session);
+    }
+   
 }
