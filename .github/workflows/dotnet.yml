@@ -2,15 +2,14 @@ name: CI - ASP.NET API
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
   build-test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout do código
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Setup .NET
@@ -28,9 +27,8 @@ jobs:
         run: dotnet build demo_api.sln --configuration Release --no-restore
 
       - name: Verify EF Core Migrations
-        run: dotnet ef migrations list \
-          --project src/project.API/project.API.csproj \
-          --startup-project src/project.API/project.API.csproj
+        working-directory: src/project.API
+        run: dotnet ef migrations list
 
       - name: Run tests
         run: dotnet test src/project.API.Tests/project.API.Tests.csproj \
