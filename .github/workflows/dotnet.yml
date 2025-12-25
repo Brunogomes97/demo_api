@@ -1,0 +1,40 @@
+name: CI - ASP.NET API
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x' 
+
+      - name: Restore dependencies
+        run: dotnet restore demo_api.sln
+
+      - name: Build solution
+        run: dotnet build demo_api.sln --configuration Release --no-restore
+
+   
+      - name: Verify EF Core Migrations
+        run: |
+          dotnet tool install --global dotnet-ef
+          export PATH="$PATH:/home/runner/.dotnet/tools"
+          dotnet ef migrations list \
+            --project src/project.API/project.API.csproj \
+            --startup-project src/project.API/project.API.csproj
+
+      - name: Run tests
+        run: dotnet test src/project.API.Tests/project.API.Tests.csproj \
+          --configuration Release \
+          --no-build \
+          --verbosity normal
