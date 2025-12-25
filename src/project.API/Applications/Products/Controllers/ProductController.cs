@@ -57,7 +57,7 @@ namespace project.API.Controllers
         {
             var userId = _currentUser.UserId;
             await _service.DeleteAsync(userId, id);
-            return NoContent();
+            return Ok(new { success = true });
         }
     }
 }
