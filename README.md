@@ -3,6 +3,9 @@
 API desenvolvida em **ASP.NET Core (.NET 8)** seguindo uma arquitetura em camadas (`Domain`, `Applications`, `Infrastructure`), com autenticação via **JWT**, persistência em **PostgreSQL** e testes unitários com **xUnit + Moq**.
 Se trata de uma api CRUD (Create, Read, Update, Delete) para um caso simples de 2 Entidades: `Users` e `Products`
 
+
+o Frontend da aplicação, pode ser acessada por aqui: [demo_app](https://github.com/Brunogomes97/demo_app)
+
 ## 📁 Estrutura do Projeto
 
 ```text

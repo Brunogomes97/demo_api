@@ -22,7 +22,7 @@ jobs:
         run: dotnet tool restore
 
       - name: Build solution
-        run: dotnet build demo_api.sln --configuration Release --no-restore
+        run: dotnet build demo_api.sln --configuration Release
 
       - name: Verify EF Core Migrations
         working-directory: src/project.API
@@ -30,4 +30,4 @@ jobs:
 
       - name: Run tests
         working-directory: src/project.API.Tests
-        run: dotnet test --configuration Release --no-build
+        run: dotnet test --configuration Release
