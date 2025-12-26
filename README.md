@@ -27,7 +27,7 @@ demo_api/
 │       ├── GlobalUsings.cs
 │       └── project.API.Tests.csproj
 │
-├── Dockerfile.yml
+├── Dockerfile
 ├── demo_api.sln
 └── README.md
 ```
