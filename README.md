@@ -4,7 +4,9 @@ API desenvolvida em **ASP.NET Core (.NET 8)** seguindo uma arquitetura em camada
 Se trata de uma api CRUD (Create, Read, Update, Delete) para um caso simples de 2 Entidades: `Users` e `Products`
 
 
-o Frontend da aplicação, pode ser acessada por aqui: [demo_app](https://github.com/Brunogomes97/demo_app)
+1. O Frontend da aplicação, pode ser acessada por aqui: [demo_app](https://github.com/Brunogomes97/demo_app)
+
+2. O Script para o app fullstack dockerizado em prod: [demo_scripts](https://github.com/Brunogomes97/demo_scripts)
 
 ## 📁 Estrutura do Projeto
 
@@ -25,7 +27,7 @@ demo_api/
 │       ├── GlobalUsings.cs
 │       └── project.API.Tests.csproj
 │
-├── docker-compose.yml
+├── Dockerfile.yml
 ├── demo_api.sln
 └── README.md
 ```
@@ -92,20 +94,24 @@ docker compose version
 
 ---
 
-## 🐘 Subindo o PostgreSQL com Docker Compose
+## 🐘 Subindo o PostgreSQL com Docker
 
-O banco de dados PostgreSQL é executado via Docker.
-
-Na raiz do projeto:
+O banco de dados PostgreSQL é executado via Docker. Pode executar via
 
 ```bash
-docker compose up -d
+docker run -d \
+  --name postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=meubanco \
+  -p 5432:5432 \
+  postgres:latest
 ```
 ---
 
-## 🔐 Configuração de Secrets (JWT)
+Caso queria ter acesso ao app completo fullstack em prod dockerizado, utilize os dockerfiles e o script compose para deploy em [demo_scripts](https://github.com/Brunogomes97/demo_scripts)
 
-⚠️ **Nunca versionar secrets no repositório.**
+## 🔐 Configuração de Secrets (JWT)
 
 O projeto utiliza **User Secrets** para ambiente de desenvolvimento.
 
