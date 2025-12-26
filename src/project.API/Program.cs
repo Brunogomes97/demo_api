@@ -23,7 +23,12 @@ var connectionString =
     builder.Configuration.GetConnectionString("DefaultConnection");
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+{
+    options.UseNpgsql(
+        connectionString,
+        npgsql => npgsql.EnableRetryOnFailure()
+    );
+});
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<ITokenService, JwtTokenService>();
 builder.Services.Configure<JwtSettings>(
@@ -44,7 +49,6 @@ builder.Services.AddSwaggerWithJwt();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<ICurrentUserService, CurrentUserService>();
 JwtSecurityTokenHandler.DefaultMapInboundClaims = false;
-
 
 var app = builder.Build();
 
