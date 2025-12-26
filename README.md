@@ -122,10 +122,14 @@ cd src/project.API
 dotnet user-secrets init
 ```
 
-### 2️⃣ Configurar o JWT Secret
+### 2️⃣ Configurar o JWT Secret e PostGres
 
 ```bash
 dotnet user-secrets set "JwtSettings:SecretKey" "SUA_SECRET_SUPER_SEGURA_AQUI"
+dotnet user-secrets set \                                                                                                                                                                              
+  "ConnectionStrings:DefaultConnection" \
+  "Host=localhost;Port=5432;Database=demo_api;Username=demo_user;Password=demo_pass" \
+  --project src/project.API
 ```
 
 📌 **Observações:**
